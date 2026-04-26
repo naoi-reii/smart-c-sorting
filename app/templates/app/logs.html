@@ -1,0 +1,163 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header Area -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-ui-title font-bold tracking-tight text-gray-900">System Logs</h2>
+            <p class="text-ui-tiny text-gray-500 mt-0.5">Detailed history of Calamansi processing and system events.</p>
+        </div>
+        <div class="flex space-x-2">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </span>
+                <input type="text" placeholder="Search logs..." class="pl-9 pr-4 py-1.5 bg-white border border-gray-200 rounded-lg text-ui-base focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all w-64">
+            </div>
+            <button class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-ui-base font-medium hover:bg-gray-50 transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 01-.293.707V17l-4 4v-6.586a1 1 0 01-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                Filters
+            </button>
+            <button class="px-3 py-1.5 bg-primary text-white rounded-lg text-ui-base font-medium hover:opacity-90 transition-opacity">Export CSV</button>
+        </div>
+    </div>
+
+    <!-- Quick Stats for Logs -->
+    <div class="grid grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-ui-tiny font-bold text-gray-400 uppercase tracking-widest">Total Events</p>
+            <p class="text-ui-metric font-bold mt-1">1,284</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-ui-tiny font-bold text-gray-400 uppercase tracking-widest">Passed</p>
+            <p class="text-ui-metric font-bold mt-1 text-primary">1,102</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-ui-tiny font-bold text-gray-400 uppercase tracking-widest">Manual Required</p>
+            <p class="text-ui-metric font-bold mt-1 text-yellow-600">142</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-ui-tiny font-bold text-gray-400 uppercase tracking-widest">System Warnings</p>
+            <p class="text-ui-metric font-bold mt-1 text-red-500">40</p>
+        </div>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-ui-tiny font-bold text-gray-400 uppercase tracking-widest bg-gray-50 border-b border-gray-100">
+                        <th class="px-6 py-4">Event Type</th>
+                        <th class="px-6 py-4">Entity</th>
+                        <th class="px-6 py-4">Description</th>
+                        <th class="px-6 py-4">Weight</th>
+                        <th class="px-6 py-4">Score</th>
+                        <th class="px-6 py-4">Timestamp</th>
+                        <th class="px-6 py-4 text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 text-ui-base">
+                    <!-- Row 1 -->
+                    <tr class="hover:bg-gray-50 transition-colors group">
+                        <td class="px-6 py-4">
+                            <span class="flex items-center">
+                                <span class="w-2 h-2 rounded-full bg-primary mr-2"></span>
+                                Processing
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-gray-700">Batch #CL-8842</td>
+                        <td class="px-6 py-4 text-gray-500">Normal sort execution completed.</td>
+                        <td class="px-6 py-4 text-gray-500">29.1g</td>
+                        <td class="px-6 py-4 text-primary font-bold">9.4/10</td>
+                        <td class="px-6 py-4 text-gray-400 text-ui-tiny">2026-04-26 14:22:10</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-ui-tiny font-bold uppercase">Passed</span>
+                        </td>
+                    </tr>
+                    <!-- Row 2 -->
+                    <tr class="hover:bg-gray-50 transition-colors group">
+                        <td class="px-6 py-4">
+                            <span class="flex items-center">
+                                <span class="w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
+                                System
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-gray-700">Sensor-A4</td>
+                        <td class="px-6 py-4 text-gray-500">Recalibration required soon.</td>
+                        <td class="px-6 py-4 text-gray-300">—</td>
+                        <td class="px-6 py-4 text-gray-300">—</td>
+                        <td class="px-6 py-4 text-gray-400 text-ui-tiny">2026-04-26 14:15:05</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-ui-tiny font-bold uppercase">Warning</span>
+                        </td>
+                    </tr>
+                    <!-- Row 3 -->
+                    <tr class="hover:bg-gray-50 transition-colors group">
+                        <td class="px-6 py-4">
+                            <span class="flex items-center">
+                                <span class="w-2 h-2 rounded-full bg-primary mr-2"></span>
+                                Processing
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-gray-700">Batch #CL-8841</td>
+                        <td class="px-6 py-4 text-gray-500">Inconsistent size detected.</td>
+                        <td class="px-6 py-4 text-gray-500">27.5g</td>
+                        <td class="px-6 py-4 text-primary font-bold">8.8/10</td>
+                        <td class="px-6 py-4 text-gray-400 text-ui-tiny">2026-04-26 14:10:42</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-ui-tiny font-bold uppercase">Passed</span>
+                        </td>
+                    </tr>
+                    <!-- Row 4 -->
+                    <tr class="hover:bg-gray-50 transition-colors group">
+                        <td class="px-6 py-4">
+                            <span class="flex items-center">
+                                <span class="w-2 h-2 rounded-full bg-red-500 mr-2"></span>
+                                Quality
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-gray-700">Batch #CL-8840</td>
+                        <td class="px-6 py-4 text-gray-500">Low score, manual verification.</td>
+                        <td class="px-6 py-4 text-gray-500">24.2g</td>
+                        <td class="px-6 py-4 text-yellow-600 font-bold">6.2/10</td>
+                        <td class="px-6 py-4 text-gray-400 text-ui-tiny">2026-04-26 13:55:18</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-ui-tiny font-bold uppercase">Manual</span>
+                        </td>
+                    </tr>
+                    <!-- Row 5 (Repetitive data for visual depth) -->
+                    <tr class="hover:bg-gray-50 transition-colors group text-gray-400">
+                        <td class="px-6 py-4">
+                            <span class="flex items-center">
+                                <span class="w-2 h-2 rounded-full bg-gray-300 mr-2"></span>
+                                Archive
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">Batch #CL-8839</td>
+                        <td class="px-6 py-4 italic">Session data archived...</td>
+                        <td class="px-6 py-4">—</td>
+                        <td class="px-6 py-4">—</td>
+                        <td class="px-6 py-4 text-ui-tiny">2026-04-26 12:45:00</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-ui-tiny font-bold uppercase">Stored</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination -->
+        <div class="p-4 border-t border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <p class="text-ui-tiny text-gray-500 font-medium">Showing <span class="text-gray-900 font-bold">5</span> of <span class="text-gray-900 font-bold">1,284</span> results</p>
+            <div class="flex space-x-1">
+                <button class="px-2.5 py-1 border border-gray-200 rounded hover:bg-white text-ui-tiny font-bold transition-all">Previous</button>
+                <button class="px-2.5 py-1 bg-primary text-white rounded text-ui-tiny font-bold">1</button>
+                <button class="px-2.5 py-1 border border-gray-200 rounded hover:bg-white text-ui-tiny font-bold transition-all">2</button>
+                <button class="px-2.5 py-1 border border-gray-200 rounded hover:bg-white text-ui-tiny font-bold transition-all">3</button>
+                <button class="px-2.5 py-1 border border-gray-200 rounded hover:bg-white text-ui-tiny font-bold transition-all">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
