@@ -114,52 +114,46 @@
     <!-- Real-time Tracking List -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-5 border-b border-gray-100 flex justify-between items-center">
-            <h3 class="text-sm font-bold">Recent Sorting Activity</h3>
-            <button class="text-primary text-xs font-bold hover:underline">View Logs &rarr;</button>
+            <h3 class="text-ui-header font-bold">Recent Sorting Activity</h3>
+            <a href="{% url 'logs' %}" class="text-primary text-ui-tiny font-bold hover:underline">View Logs &rarr;</a>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50">
-                        <th class="px-6 py-3">Batch ID</th>
-                        <th class="px-6 py-3">Timestamp</th>
-                        <th class="px-6 py-3">Weight</th>
-                        <th class="px-6 py-3">Color Reading</th>
-                        <th class="px-6 py-3 text-right">Bin Classification</th>
+                    <tr class="text-ui-tiny font-bold text-gray-400 uppercase tracking-widest bg-gray-50 border-b border-gray-100">
+                        <th class="px-6 py-4">Batch ID</th>
+                        <th class="px-6 py-4">Weight Sensor</th>
+                        <th class="px-6 py-4">Color Sensor</th>
+                        <th class="px-6 py-4">Timestamp</th>
+                        <th class="px-6 py-4 text-right">Classification</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
-                    <tr class="hover:bg-gray-50 transition-colors group text-xs">
-                        <td class="px-6 py-3.5 font-bold text-gray-700">#CL-8842</td>
-                        <td class="px-6 py-3.5 text-gray-500">2 mins ago</td>
-                        <td class="px-6 py-3.5 text-gray-500 font-medium">14.1g</td>
-                        <td class="px-6 py-3.5">
-                            <span class="text-primary font-bold">Yellow</span>
-                        </td>
-                        <td class="px-6 py-3.5 text-right">
-                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-bold uppercase">High Quality</span>
+                <tbody class="divide-y divide-gray-100 text-ui-tiny">
+                    <tr class="hover:bg-gray-50/50 transition-colors group">
+                        <td class="px-6 py-4 font-bold text-gray-700">#CL-8842</td>
+                        <td class="px-6 py-4 text-gray-600">14.1g</td>
+                        <td class="px-6 py-4 text-gray-600">Yellow</td>
+                        <td class="px-6 py-4 text-gray-400">2 mins ago</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-0.5 text-primary rounded font-bold uppercase">High Quality</span>
                         </td>
                     </tr>
-                    <tr class="hover:bg-gray-50 transition-colors group text-xs">
-                        <td class="px-6 py-3.5 font-bold text-gray-700">#CL-8841</td>
-                        <td class="px-6 py-3.5 text-gray-500">12 mins ago</td>
-                        <td class="px-6 py-3.5 text-gray-500 font-medium">10.2g</td>
-                        <td class="px-6 py-3.5">
-                            <span class="text-yellow-600 font-bold">Yellow</span>
-                        </td>
-                        <td class="px-6 py-3.5 text-right">
-                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-[10px] font-bold uppercase">Low Quality</span>
+                    <tr class="hover:bg-gray-50/50 transition-colors group">
+                        <td class="px-6 py-4 font-bold text-gray-700">#CL-8841</td>
+                        <td class="px-6 py-4 text-gray-600">10.2g</td>
+                        <td class="px-6 py-4 text-gray-600">Yellow</td>
+                        <td class="px-6 py-4 text-gray-400">12 mins ago</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-0.5 text-gray-500 rounded font-bold uppercase">Low Quality</span>
                         </td>
                     </tr>
-                    <tr class="hover:bg-gray-50 transition-colors group text-xs">
-                        <td class="px-6 py-3.5 font-bold text-gray-700">#CL-8840</td>
-                        <td class="px-6 py-3.5 text-gray-500">45 mins ago</td>
-                        <td class="px-6 py-3.5 text-gray-500 font-medium">8.4g</td>
-                        <td class="px-6 py-3.5">
-                            <span class="text-gray-400 font-bold">Dark Green</span>
-                        </td>
-                        <td class="px-6 py-3.5 text-right">
-                            <span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-[10px] font-bold uppercase">Rejected</span>
+                    <tr class="hover:bg-gray-50/50 transition-colors group">
+                        <td class="px-6 py-4 font-bold text-gray-700">#CL-8840</td>
+                        <td class="px-6 py-4 text-gray-600">8.4g</td>
+                        <td class="px-6 py-4 text-gray-600">Dark Green</td>
+                        <td class="px-6 py-4 text-gray-400">45 mins ago</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-2 py-0.5 bg-red-50 text-red-600 rounded font-bold uppercase">Rejected</span>
                         </td>
                     </tr>
                 </tbody>
