@@ -123,7 +123,7 @@ Used for status classification inside tables:
 
 ---
 
-## 5. Charts (ApexCharts)
+## 5. Charts (Apexcharts) Only if applicable.
 
 Charts are styled to match the UI theme seamlessly:
 - **Container Height:** `h-64` or `h-72` (to prevent resize loops, explicitly defined).

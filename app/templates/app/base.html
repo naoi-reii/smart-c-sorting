@@ -60,7 +60,7 @@
             <div class="p-6 flex items-center justify-between">
                 <div class="flex items-center space-x-2 overflow-hidden">
                     <img src="{% static 'app/logo.png' %}" alt="SmartC Logo" class="w-10 h-10 object-contain flex-shrink-0">
-                    <h1 class="sidebar-text text-[18px] font-bold tracking-tight dark:text-white transition-opacity duration-300">s.m.a.r.t.c</h1>
+                    <h1 class="sidebar-text text-[18px] font-bold tracking-tight dark:text-white transition-opacity duration-300">s.m.a.r.t c</h1>
                 </div>
                 <button id="sidebar-toggle" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-colors">
                     <svg id="toggle-icon" class="w-5 h-5 transition-transform duration-300" fill="currentColor" viewBox="0 -960 960 960">
@@ -98,16 +98,21 @@
                 </button>
             </div>
 
-            <div class="p-4 border-t border-gray-200 dark:border-dark-border overflow-hidden">
+            <div class="p-4 border-t border-gray-200 dark:border-dark-border overflow-hidden flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden flex-shrink-0">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=046307&color=fff" alt="User">
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.username|default:'User' }}&background=046307&color=fff" alt="User">
                     </div>
-                    <div class="sidebar-text transition-opacity duration-300">
-                        <p class="text-ui-base font-medium dark:text-white whitespace-nowrap">Christian</p>
-                        <p class="text-ui-tiny text-gray-500 dark:text-dark-muted whitespace-nowrap">Calamansi System</p>
+                    <div class="sidebar-text transition-opacity duration-300 flex-1 overflow-hidden">
+                        <p class="text-ui-base font-medium dark:text-white whitespace-nowrap truncate">{{ request.user.first_name|default:request.user.username|default:"Guest"|title }}</p>
+                        <p class="text-ui-tiny text-gray-500 dark:text-dark-muted whitespace-nowrap truncate">Calamansi System</p>
                     </div>
                 </div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="sidebar-text transition-opacity duration-300 p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-900/20 transition-colors flex-shrink-0" title="Logout">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </a>
+                {% endif %}
             </div>
         </aside>
 
