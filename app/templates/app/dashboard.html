@@ -12,9 +12,9 @@
             <!-- Date Filter -->
             <div class="hidden md:flex items-center space-x-2 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-lg p-1 shadow-sm">
                 <div class="flex">
-                    <button class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-primary text-white rounded-md shadow-sm">Today</button>
-                    <button class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:text-gray-700 dark:text-dark-muted dark:hover:text-white transition-colors">Month</button>
-                    <button class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:text-gray-700 dark:text-dark-muted dark:hover:text-white transition-colors">Year</button>
+                    <button id="filter-today" class="date-filter-btn px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-primary text-white rounded-md shadow-sm">Today</button>
+                    <button id="filter-month" class="date-filter-btn px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:text-gray-700 dark:text-dark-muted dark:hover:text-white transition-colors">Month</button>
+                    <button id="filter-year" class="date-filter-btn px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:text-gray-700 dark:text-dark-muted dark:hover:text-white transition-colors">Year</button>
                     <button id="custom-date-btn" class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:text-gray-700 dark:text-dark-muted dark:hover:text-white transition-colors">Custom</button>
                 </div>
             </div>
@@ -40,16 +40,16 @@
                     <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="block text-[10px] font-bold text-gray-400 dark:text-dark-muted uppercase tracking-widest mb-1.5">Start Date</label>
-                            <input type="date" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-dark-border rounded-xl px-4 py-2.5 text-sm dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                            <input type="date" id="start-date" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-dark-border rounded-xl px-4 py-2.5 text-sm dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-gray-400 dark:text-dark-muted uppercase tracking-widest mb-1.5">End Date</label>
-                            <input type="date" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-dark-border rounded-xl px-4 py-2.5 text-sm dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                            <input type="date" id="end-date" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-dark-border rounded-xl px-4 py-2.5 text-sm dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
                         </div>
                     </div>
                     <div class="mt-8 flex space-x-3">
                         <button id="close-modal-btn" class="flex-1 px-4 py-2.5 text-xs font-bold text-gray-500 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all uppercase tracking-widest">Cancel</button>
-                        <button class="flex-1 px-4 py-2.5 bg-primary text-white text-xs font-bold rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-all uppercase tracking-widest">Apply Range</button>
+                        <button id="apply-range-btn" class="flex-1 px-4 py-2.5 bg-primary text-white text-xs font-bold rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-all uppercase tracking-widest">Apply Range</button>
                     </div>
                 </div>
             </div>
@@ -158,7 +158,7 @@
                         <td class="px-6 py-4 text-gray-600 dark:text-dark-muted">Yellow</td>
                         <td class="px-6 py-4 text-gray-400 dark:text-gray-500">2 mins ago</td>
                         <td class="px-6 py-4 text-right">
-                            <span class="px-2 py-0.5 text-primary rounded font-bold uppercase">High Quality</span>
+                            <span class="px-2 py-0.5 text-primary rounded font-medium uppercase">High Quality</span>
                         </td>
                     </tr>
                     <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors group">
@@ -167,7 +167,7 @@
                         <td class="px-6 py-4 text-gray-600 dark:text-dark-muted">Yellow</td>
                         <td class="px-6 py-4 text-gray-400 dark:text-gray-500">12 mins ago</td>
                         <td class="px-6 py-4 text-right">
-                            <span class="px-2 py-0.5 text-gray-500 dark:text-dark-muted rounded font-bold uppercase">Low Quality</span>
+                            <span class="px-2 py-0.5 text-gray-500 dark:text-dark-muted rounded font-medium uppercase">Low Quality</span>
                         </td>
                     </tr>
                     <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors group">
@@ -176,7 +176,7 @@
                         <td class="px-6 py-4 text-gray-600 dark:text-dark-muted">Dark Green</td>
                         <td class="px-6 py-4 text-gray-400 dark:text-gray-500">45 mins ago</td>
                         <td class="px-6 py-4 text-right">
-                            <span class="px-2 py-0.5 text-red-600 rounded font-bold uppercase">Rejected</span>
+                            <span class="px-2 py-0.5 text-red-600 rounded font-medium uppercase">Rejected</span>
                         </td>
                     </tr>
                 </tbody>
@@ -258,14 +258,52 @@
         });
     });
 
+    // Date Filter Toggle Logic
+    const filterButtons = document.querySelectorAll('.date-filter-btn');
+    
+    function setActiveFilter(activeBtn) {
+        filterButtons.forEach(btn => {
+            btn.classList.remove('bg-primary', 'text-white', 'rounded-md', 'shadow-sm');
+            btn.classList.add('text-gray-500', 'hover:text-gray-700', 'dark:text-dark-muted', 'dark:hover:text-white');
+        });
+        openBtn.classList.remove('bg-primary', 'text-white', 'rounded-md', 'shadow-sm');
+        openBtn.classList.add('text-gray-500', 'hover:text-gray-700', 'dark:text-dark-muted', 'dark:hover:text-white');
+        
+        activeBtn.classList.add('bg-primary', 'text-white', 'rounded-md', 'shadow-sm');
+        activeBtn.classList.remove('text-gray-500', 'hover:text-gray-700', 'dark:text-dark-muted', 'dark:hover:text-white');
+    }
+
+    filterButtons.forEach(btn => {
+        btn.onclick = () => {
+            setActiveFilter(btn);
+            console.log(`Filter changed to: ${btn.textContent.trim()}`);
+        };
+    });
+
     // Modal Logic
     const modal = document.getElementById('date-modal');
     const openBtn = document.getElementById('custom-date-btn');
+    const applyBtn = document.getElementById('apply-range-btn');
     const closeBtns = [document.getElementById('close-modal-x'), document.getElementById('close-modal-btn')];
 
     if (openBtn) {
         openBtn.onclick = () => modal.classList.remove('hidden');
     }
+    
+    if (applyBtn) {
+        applyBtn.onclick = () => {
+            const start = document.getElementById('start-date').value;
+            const end = document.getElementById('end-date').value;
+            if (start && end) {
+                console.log(`Applying range: ${start} to ${end}`);
+                setActiveFilter(openBtn); // Use openBtn (Custom) as the active filter
+                modal.classList.add('hidden');
+            } else {
+                alert('Please select both start and end dates.');
+            }
+        };
+    }
+
     closeBtns.forEach(btn => {
         if (btn) btn.onclick = () => modal.classList.add('hidden');
     });
