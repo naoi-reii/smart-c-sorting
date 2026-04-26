@@ -1,0 +1,255 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header Area -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-xl font-bold tracking-tight text-gray-900">Calamansi Dashboard</h2>
+            <p class="text-xs text-gray-500 mt-0.5">Real-time processing overview for today.</p>
+        </div>
+        <div class="flex space-x-2">
+            <button class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-medium hover:bg-gray-50 transition-colors">Export Logs</button>
+            <button class="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-medium hover:opacity-90 transition-opacity">System Diagnostics</button>
+        </div>
+    </div>
+
+    <!-- Top Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Average Weight Card -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Average Weight</h3>
+                <span class="p-1.5 bg-green-50 rounded text-primary">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+                </span>
+            </div>
+            <div class="flex items-baseline space-x-1.5">
+                <span class="text-xl font-bold">28.4g</span>
+                <span class="text-primary text-[11px] font-bold flex items-center">
+                    <svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                    12%
+                </span>
+            </div>
+            <p class="text-gray-400 text-[10px] mt-1 italic">Avg. weight per fruit harvested</p>
+        </div>
+
+        <!-- System Status Card -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">System Status</h3>
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+            </div>
+            <div class="flex items-baseline space-x-1.5">
+                <span class="text-xl font-bold">Optimal</span>
+            </div>
+            <div class="mt-3 flex items-center space-x-2">
+                <div class="flex-1 bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-primary h-full w-[94%]"></div>
+                </div>
+                <span class="text-[10px] font-bold text-gray-500">94% Load</span>
+            </div>
+        </div>
+
+        <!-- Yield Goal Card -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden">
+            <div class="relative z-10">
+                <h3 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Daily Goal</h3>
+                <div class="flex flex-col items-center">
+                    <canvas id="goalChart" class="max-h-20"></canvas>
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 translate-y-1">
+                        <span class="text-lg font-bold">84%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Yield Distribution Chart -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold">Yield Distribution</h3>
+                <span class="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Quality Split</span>
+            </div>
+            <div class="h-48 flex items-center justify-center">
+                <canvas id="yieldChart"></canvas>
+            </div>
+            <div class="mt-4 flex justify-around text-center">
+                <div>
+                    <p class="text-lg font-bold text-primary">70%</p>
+                    <p class="text-[10px] text-gray-500 font-medium">High Quality</p>
+                </div>
+                <div class="w-px bg-gray-100"></div>
+                <div>
+                    <p class="text-lg font-bold text-gray-400">30%</p>
+                    <p class="text-[10px] text-gray-500 font-medium">Standard</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Production Trends Chart -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold">Production Trends</h3>
+                <div class="flex items-center space-x-2 text-[10px] font-medium text-gray-500">
+                    <span class="flex items-center"><span class="w-2 h-2 bg-primary rounded-full mr-1 opacity-20"></span> Throughput</span>
+                </div>
+            </div>
+            <div class="h-48">
+                <canvas id="trendsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time Tracking List -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+            <h3 class="text-sm font-bold">Recent Sorting Activity</h3>
+            <button class="text-primary text-xs font-bold hover:underline">View Logs &rarr;</button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50">
+                        <th class="px-6 py-3">Batch ID</th>
+                        <th class="px-6 py-3">Timestamp</th>
+                        <th class="px-6 py-3">Avg Weight</th>
+                        <th class="px-6 py-3">Quality Score</th>
+                        <th class="px-6 py-3 text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <tr class="hover:bg-gray-50 transition-colors group text-xs">
+                        <td class="px-6 py-3.5 font-bold text-gray-700">#CL-8842</td>
+                        <td class="px-6 py-3.5 text-gray-500">2 mins ago</td>
+                        <td class="px-6 py-3.5 text-gray-500">29.1g</td>
+                        <td class="px-6 py-3.5">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="font-bold text-primary">9.4</span>
+                                <div class="w-12 h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="bg-primary h-full w-[94%]"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3.5 text-right">
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-bold uppercase">Passed</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 transition-colors group text-xs">
+                        <td class="px-6 py-3.5 font-bold text-gray-700">#CL-8841</td>
+                        <td class="px-6 py-3.5 text-gray-500">12 mins ago</td>
+                        <td class="px-6 py-3.5 text-gray-500">27.5g</td>
+                        <td class="px-6 py-3.5">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="font-bold text-primary">8.8</span>
+                                <div class="w-12 h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="bg-primary h-full w-[88%]"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3.5 text-right">
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-bold uppercase">Passed</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 transition-colors group text-xs">
+                        <td class="px-6 py-3.5 font-bold text-gray-700">#CL-8840</td>
+                        <td class="px-6 py-3.5 text-gray-500">45 mins ago</td>
+                        <td class="px-6 py-3.5 text-gray-500">24.2g</td>
+                        <td class="px-6 py-3.5">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="font-bold text-yellow-600">6.2</span>
+                                <div class="w-12 h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="bg-yellow-500 h-full w-[62%]"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3.5 text-right">
+                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-[10px] font-bold uppercase">Manual</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Yield Distribution Chart
+    const yieldCtx = document.getElementById('yieldChart').getContext('2d');
+    new Chart(yieldCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['High Quality', 'Standard'],
+            datasets: [{
+                data: [70, 30],
+                backgroundColor: ['#046307', '#e5e7eb'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            cutout: '80%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Production Trends Chart
+    const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+    new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+            labels: ['12am', '4am', '8am', '12pm', '4pm', '8pm'],
+            datasets: [{
+                label: 'Throughput',
+                data: [120, 190, 450, 600, 520, 380],
+                borderColor: '#046307',
+                backgroundColor: 'rgba(4, 99, 7, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { 
+                    grid: { color: '#f3f4f6' },
+                    ticks: { callback: value => value + ' kg' }
+                }
+            }
+        }
+    });
+
+    // Daily Goal Chart
+    const goalCtx = document.getElementById('goalChart').getContext('2d');
+    new Chart(goalCtx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [84, 16],
+                backgroundColor: ['#046307', '#fef3c7'],
+                borderWidth: 0,
+                circumference: 180,
+                rotation: 270,
+            }]
+        },
+        options: {
+            cutout: '85%',
+            plugins: { legend: { display: false } }
+        }
+    });
+</script>
+{% endblock %}
