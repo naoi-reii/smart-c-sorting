@@ -13,6 +13,10 @@ def dashboard(request):
 def logs(request):
     return render(request, 'app/logs.html')
 
+@login_required
+def settings_view(request):
+    return render(request, 'app/settings.html')
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
