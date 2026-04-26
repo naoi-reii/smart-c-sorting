@@ -99,9 +99,7 @@
                 <h3 class="text-ui-base font-bold dark:text-white">Yield Distribution</h3>
                 <span class="text-[9px] text-gray-400 dark:text-dark-muted uppercase tracking-widest font-bold">Bin Classification</span>
             </div>
-            <div class="h-48 flex items-center justify-center">
-                <canvas id="yieldChart"></canvas>
-            </div>
+            <div class="h-64 w-full overflow-hidden" id="yieldChart"></div>
             <div class="mt-4 flex justify-around text-center">
                 <div>
                     <p class="text-lg font-bold text-primary">70%</p>
@@ -128,9 +126,7 @@
                     <span class="flex items-center"><span class="w-2 h-2 bg-primary rounded-full mr-1 opacity-20"></span> Avg. Weight</span>
                 </div>
             </div>
-            <div class="h-48">
-                <canvas id="trendsChart"></canvas>
-            </div>
+            <div class="h-72 w-full" id="trendsChart"></div>
         </div>
     </div>
 
@@ -186,88 +182,141 @@
 </div>
 
 <script>
-    // Theme-aware Chart.js defaults
-    const isDark = document.documentElement.classList.contains('dark');
-    const chartTextColor = isDark ? '#9ca3af' : '#6b7280';
-    const chartGridColor = isDark ? '#374151' : '#f3f4f6';
+    // ApexCharts Initialization
+    let yieldChart, trendsChart;
 
-    Chart.defaults.color = chartTextColor;
-    Chart.defaults.borderColor = chartGridColor;
-    Chart.defaults.font.family = "'DM Sans', sans-serif";
+    function getChartOptions(isDark) {
+        const chartTextColor = isDark ? '#9ca3af' : '#6b7280';
+        const chartGridColor = isDark ? '#374151' : '#f3f4f6';
 
-    // Wait for fonts to load before rendering charts to prevent font fallback issues
-    document.fonts.ready.then(() => {
-        // Yield Distribution Chart
-        const yieldCtx = document.getElementById('yieldChart').getContext('2d');
-        new Chart(yieldCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['High Quality', 'Low Quality', 'Rejected'],
-                datasets: [{
-                    data: [70, 22, 8],
-                    backgroundColor: ['#046307', '#eab308', '#ef4444'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                cutout: '80%',
-                plugins: {
-                    legend: { display: false }
-                }
-            }
-        });
-
-        // Weight Trends Chart
-        const trendsCtx = document.getElementById('trendsChart').getContext('2d');
-        new Chart(trendsCtx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Avg. Weight',
-                    data: [13.2, 14.5, 12.8, 15.0, 14.2, 13.5, 14.2],
-                    borderColor: '#046307',
-                    backgroundColor: isDark ? 'rgba(4, 99, 7, 0.05)' : 'rgba(4, 99, 7, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 3,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
+        return {
+            yield: {
+                series: [70, 22, 8],
+                chart: {
+                    type: 'donut',
+                    height: 250,
+                    fontFamily: 'DM Sans, sans-serif',
+                    animations: { enabled: true, easing: 'easeinout', speed: 800 }
                 },
-                scales: {
-                    x: { 
-                        grid: { display: false },
-                        ticks: { color: chartTextColor }
-                    },
-                    y: { 
-                        grid: { color: chartGridColor },
-                        ticks: { 
-                            color: chartTextColor,
-                            callback: value => value + ' g' 
+                labels: ['High Quality', 'Low Quality', 'Rejected'],
+                colors: ['#046307', '#eab308', '#ef4444'],
+                stroke: { show: false },
+                dataLabels: { enabled: false },
+                plotOptions: {
+                    pie: {
+                        customScale: 0.85,
+                        donut: {
+                            size: '80%',
+                            labels: {
+                                show: true,
+                                name: { show: false },
+                                value: {
+                                    show: true,
+                                    fontSize: '24px',
+                                    fontWeight: 'bold',
+                                    color: isDark ? '#fff' : '#111',
+                                    formatter: (val) => val + '%'
+                                },
+                                total: {
+                                    show: true,
+                                    label: 'Yield',
+                                    formatter: () => '70%'
+                                }
+                            }
                         }
                     }
-                }
+                },
+                legend: { show: false },
+                tooltip: { theme: isDark ? 'dark' : 'light' }
+            },
+            trends: {
+                series: [{
+                    name: 'Avg. Weight',
+                    data: [13.2, 14.5, 12.8, 15.0, 14.2, 13.5, 14.2]
+                }],
+                chart: {
+                    type: 'area',
+                    height: 250,
+                    toolbar: { show: false },
+                    fontFamily: 'DM Sans, sans-serif',
+                    zoom: { enabled: false }
+                },
+                colors: ['#046307'],
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.45,
+                        opacityTo: 0.05,
+                        stops: [20, 100]
+                    }
+                },
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 3 },
+                grid: {
+                    borderColor: chartGridColor,
+                    strokeDashArray: 4,
+                    padding: { left: 10, right: 10, top: 0, bottom: 0 }
+                },
+                xaxis: {
+                    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                    labels: { style: { colors: chartTextColor, fontSize: '10px' } }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: chartTextColor, fontSize: '10px' },
+                        formatter: (val) => val + 'g'
+                    }
+                },
+                tooltip: { theme: isDark ? 'dark' : 'light' }
             }
+        };
+    }
+
+    function initCharts() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const options = getChartOptions(isDark);
+
+        yieldChart = new ApexCharts(document.querySelector("#yieldChart"), options.yield);
+        trendsChart = new ApexCharts(document.querySelector("#trendsChart"), options.trends);
+
+        yieldChart.render();
+        trendsChart.render();
+    }
+
+    // Initialize on load
+    window.addEventListener('load', initCharts);
+
+    // Watch for theme changes
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            // Give it a tiny delay to wait for the .dark class to be toggled on documentElement
+            setTimeout(() => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const options = getChartOptions(isDark);
+                
+                yieldChart.updateOptions(options.yield);
+                trendsChart.updateOptions(options.trends);
+            }, 10);
         });
-    });
+    }
 
     // Date Filter Toggle Logic
     const filterButtons = document.querySelectorAll('.date-filter-btn');
+    const customBtn = document.getElementById('custom-date-btn');
     
     function setActiveFilter(activeBtn) {
         filterButtons.forEach(btn => {
             btn.classList.remove('bg-primary', 'text-white', 'rounded-md', 'shadow-sm');
             btn.classList.add('text-gray-500', 'hover:text-gray-700', 'dark:text-dark-muted', 'dark:hover:text-white');
         });
-        openBtn.classList.remove('bg-primary', 'text-white', 'rounded-md', 'shadow-sm');
-        openBtn.classList.add('text-gray-500', 'hover:text-gray-700', 'dark:text-dark-muted', 'dark:hover:text-white');
+        if (customBtn) {
+            customBtn.classList.remove('bg-primary', 'text-white', 'rounded-md', 'shadow-sm');
+            customBtn.classList.add('text-gray-500', 'hover:text-gray-700', 'dark:text-dark-muted', 'dark:hover:text-white');
+        }
         
         activeBtn.classList.add('bg-primary', 'text-white', 'rounded-md', 'shadow-sm');
         activeBtn.classList.remove('text-gray-500', 'hover:text-gray-700', 'dark:text-dark-muted', 'dark:hover:text-white');
@@ -296,7 +345,7 @@
             const end = document.getElementById('end-date').value;
             if (start && end) {
                 console.log(`Applying range: ${start} to ${end}`);
-                setActiveFilter(openBtn); // Use openBtn (Custom) as the active filter
+                setActiveFilter(openBtn); 
                 modal.classList.add('hidden');
             } else {
                 alert('Please select both start and end dates.');
