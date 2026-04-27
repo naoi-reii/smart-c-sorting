@@ -1,7 +1,7 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-<div class="-mx-8 -my-8 min-h-[calc(100vh)] flex flex-col">
+<div class="-mx-8 -my-8 min-h-[calc(100vh)] flex flex-col relative">
     <!-- Header -->
     <div class="px-8 pt-8 mb-6">
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Settings</h2>
@@ -28,18 +28,20 @@
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">My Profile</h3>
                     <div class="border-t border-gray-200 dark:border-dark-border mb-8"></div>
                     
-                    <div class="flex items-center space-x-6 mb-8">
+                    <div class="flex items-center space-x-6 mb-8" id="profile-image-block">
                         <!-- Avatar Placeholder -->
                         <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-full flex-shrink-0 overflow-hidden">
-                            <!-- Using a blank background matching the screenshot -->
+                            {% if request.user.userprofile.image %}
+                                <img src="{{ request.user.userprofile.image.url }}" class="w-full h-full object-cover" alt="Profile Image">
+                            {% endif %}
                         </div>
                         <div>
                             <div class="flex space-x-3 mb-2">
-                                <button class="px-4 py-2 bg-primary text-white text-xs font-medium rounded-lg flex items-center hover:opacity-90 transition-opacity shadow-sm">
+                                <button type="button" onclick="openModal('modal-image')" class="px-4 py-2 bg-primary text-white text-xs font-medium rounded-lg flex items-center hover:opacity-90 transition-opacity shadow-sm">
                                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                     Change Image
                                 </button>
-                                <button class="px-4 py-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-700 dark:text-white text-xs font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors shadow-sm">
+                                <button type="button" hx-post="{% url 'remove_image' %}" hx-target="#profile-image-block" hx-swap="outerHTML" hx-select="#profile-image-block" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="px-4 py-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-700 dark:text-white text-xs font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors shadow-sm">
                                     Remove Image
                                 </button>
                             </div>
@@ -47,11 +49,11 @@
                         </div>
                     </div>
 
-                    <div class="mb-6">
+                    <div class="mb-6" id="username-block">
                         <label class="block text-[11px] font-bold text-gray-500 dark:text-dark-muted uppercase tracking-widest mb-2">Username</label>
                         <div class="flex items-center space-x-4">
-                            <input type="text" class="w-full max-w-md bg-transparent border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" value="{{ request.user.username|default:'' }}">
-                            <button class="px-4 py-2 bg-primary text-white text-ui-tiny font-medium rounded-lg hover:opacity-90 shadow-sm shadow-primary/20 transition-all whitespace-nowrap">
+                            <input type="text" readonly class="w-full max-w-md bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white outline-none cursor-not-allowed" value="{{ request.user.username|default:'' }}">
+                            <button type="button" onclick="openModal('modal-username')" class="px-4 py-2 bg-primary text-white text-ui-tiny font-medium rounded-lg hover:opacity-90 shadow-sm shadow-primary/20 transition-all whitespace-nowrap">
                                 Change Username
                             </button>
                         </div>
@@ -64,21 +66,21 @@
                     <div class="border-t border-gray-200 dark:border-dark-border mb-8"></div>
 
                     <div class="space-y-8">
-                        <div>
+                        <div id="email-block">
                             <label class="block text-[11px] font-bold text-gray-500 dark:text-dark-muted uppercase tracking-widest mb-2">Email</label>
                             <div class="flex items-center space-x-4">
-                                <input type="email" class="w-full max-w-md bg-transparent border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" value="{{ request.user.email|default:'' }}">
-                                <button class="px-4 py-2 bg-primary text-white text-ui-tiny font-medium rounded-lg hover:opacity-90 shadow-sm shadow-primary/20 transition-all whitespace-nowrap">
+                                <input type="email" readonly class="w-full max-w-md bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white outline-none cursor-not-allowed" value="{{ request.user.email|default:'' }}">
+                                <button type="button" onclick="openModal('modal-email')" class="px-4 py-2 bg-primary text-white text-ui-tiny font-medium rounded-lg hover:opacity-90 shadow-sm shadow-primary/20 transition-all whitespace-nowrap">
                                     Change Email
                                 </button>
                             </div>
                         </div>
 
-                        <div>
+                        <div id="password-block">
                             <label class="block text-[11px] font-bold text-gray-500 dark:text-dark-muted uppercase tracking-widest mb-2">Password</label>
                             <div class="flex items-center space-x-4">
-                                <input type="password" class="w-full max-w-md bg-transparent border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" value="" placeholder="">
-                                <button class="px-4 py-2 bg-primary text-white text-ui-tiny font-medium rounded-lg hover:opacity-90 shadow-sm shadow-primary/20 transition-all whitespace-nowrap">
+                                <input type="password" readonly class="w-full max-w-md bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white outline-none cursor-not-allowed" value="********" placeholder="">
+                                <button type="button" onclick="openModal('modal-password')" class="px-4 py-2 bg-primary text-white text-ui-tiny font-medium rounded-lg hover:opacity-90 shadow-sm shadow-primary/20 transition-all whitespace-nowrap">
                                     Change Password
                                 </button>
                             </div>
@@ -88,5 +90,127 @@
             </div>
         </div>
     </div>
+
+    <!-- Modals (Hidden by default) -->
+    
+    <!-- Username Modal -->
+    <div id="modal-username" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-dark-card w-full max-w-md rounded-xl shadow-lg border border-gray-200 dark:border-dark-border overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-dark-border flex justify-between items-center">
+                <h3 class="font-bold text-gray-900 dark:text-white">Change Username</h3>
+                <button type="button" onclick="closeModal('modal-username')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white">&times;</button>
+            </div>
+            <form hx-post="{% url 'update_username' %}" hx-target="#username-block" hx-swap="outerHTML" hx-select="#username-block">
+                {% csrf_token %}
+                <div class="p-6">
+                    <label class="block text-[11px] font-bold text-gray-500 dark:text-dark-muted uppercase tracking-widest mb-2">New Username</label>
+                    <input type="text" name="username" required class="w-full bg-transparent border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                </div>
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-dark-border flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('modal-username')" class="px-4 py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-white text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:opacity-90">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Email Modal -->
+    <div id="modal-email" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-dark-card w-full max-w-md rounded-xl shadow-lg border border-gray-200 dark:border-dark-border overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-dark-border flex justify-between items-center">
+                <h3 class="font-bold text-gray-900 dark:text-white">Change Email</h3>
+                <button type="button" onclick="closeModal('modal-email')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white">&times;</button>
+            </div>
+            <form hx-post="{% url 'update_email' %}" hx-target="#email-block" hx-swap="outerHTML" hx-select="#email-block">
+                {% csrf_token %}
+                <div class="p-6">
+                    <label class="block text-[11px] font-bold text-gray-500 dark:text-dark-muted uppercase tracking-widest mb-2">New Email</label>
+                    <input type="email" name="email" required class="w-full bg-transparent border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                </div>
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-dark-border flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('modal-email')" class="px-4 py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-white text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:opacity-90">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="modal-password" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-dark-card w-full max-w-md rounded-xl shadow-lg border border-gray-200 dark:border-dark-border overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-dark-border flex justify-between items-center">
+                <h3 class="font-bold text-gray-900 dark:text-white">Change Password</h3>
+                <button type="button" onclick="closeModal('modal-password')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white">&times;</button>
+            </div>
+            <form hx-post="{% url 'update_password' %}" hx-target="#password-block" hx-swap="outerHTML" hx-select="#password-block">
+                {% csrf_token %}
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 dark:text-dark-muted uppercase tracking-widest mb-2">Current Password</label>
+                        <input type="password" name="current_password" required class="w-full bg-transparent border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 dark:text-dark-muted uppercase tracking-widest mb-2">New Password</label>
+                        <input type="password" name="new_password" required class="w-full bg-transparent border border-gray-300 dark:border-dark-border rounded-lg px-4 py-2 text-ui-base dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-dark-border flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('modal-password')" class="px-4 py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-white text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:opacity-90">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="modal-image" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-dark-card w-full max-w-md rounded-xl shadow-lg border border-gray-200 dark:border-dark-border overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-dark-border flex justify-between items-center">
+                <h3 class="font-bold text-gray-900 dark:text-white">Upload Image</h3>
+                <button type="button" onclick="closeModal('modal-image')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white">&times;</button>
+            </div>
+            <form hx-post="{% url 'upload_image' %}" hx-encoding="multipart/form-data" hx-target="#profile-image-block" hx-swap="outerHTML" hx-select="#profile-image-block">
+                {% csrf_token %}
+                <div class="p-6">
+                    <div class="border-2 border-dashed border-gray-300 dark:border-dark-border rounded-lg p-8 text-center hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer" onclick="document.getElementById('file-upload').click()">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="mt-4 flex text-sm text-gray-600 dark:text-gray-400 justify-center">
+                            <label for="file-upload" class="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none">
+                                <span>Upload a file</span>
+                                <input id="file-upload" name="image" type="file" accept="image/png, image/jpeg" class="sr-only" required onchange="document.getElementById('file-name').textContent = this.files[0].name">
+                            </label>
+                            <p class="pl-1">or drag and drop</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">PNG, JPG up to 2MB</p>
+                        <p id="file-name" class="mt-4 text-sm font-bold text-gray-700 dark:text-gray-300"></p>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-dark-border flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('modal-image')" class="px-4 py-2 bg-white dark:bg-dark-card border border-gray-300 dark:border-dark-border text-gray-700 dark:text-white text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:opacity-90">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<!-- Modal Control Script -->
+<script>
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        modal.classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        modal.classList.add('hidden');
+    }
+
+    // Listen for HTMX custom trigger 'modalClose' to close modals on successful form submission
+    document.body.addEventListener('modalClose', function() {
+        document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+    });
+</script>
 {% endblock %}
