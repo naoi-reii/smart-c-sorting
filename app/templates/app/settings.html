@@ -33,6 +33,8 @@
                         <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-full flex-shrink-0 overflow-hidden">
                             {% if request.user.userprofile.image %}
                                 <img src="{{ request.user.userprofile.image.url }}" class="w-full h-full object-cover" alt="Profile Image">
+                            {% else %}
+                                <img src="https://ui-avatars.com/api/?name={{ request.user.username|default:'User' }}&background=046307&color=fff" class="w-full h-full object-cover" alt="Profile Image">
                             {% endif %}
                         </div>
                         <div>
