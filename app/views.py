@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse
-from .models import UserProfile
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+from .models import UserProfile, Device
+import json
 
 # Create your views here.
 
@@ -14,6 +17,51 @@ def dashboard(request):
 @login_required
 def logs(request):
     return render(request, 'app/logs.html')
+
+@login_required
+def diagnostics(request):
+    return render(request, 'app/diagnostics.html')
+
+@login_required
+def diagnostics_status(request):
+    # Check for Orange Pi device
+    device, created = Device.objects.get_or_create(name="Orange Pi")
+    
+    # Consider "Online" if seen in the last 15 seconds
+    is_online = False
+    if device.last_seen:
+        diff = timezone.now() - device.last_seen
+        if diff.total_seconds() < 15:
+            is_online = True
+            
+    return render(request, 'app/partials/diagnostic_status.html', {
+        'device': device,
+        'is_online': is_online
+    })
+
+@csrf_exempt
+def api_ping(request):
+    if request.method == 'POST':
+        try:
+            # We don't necessarily need body data for a simple ping, 
+            # but we can capture the sender's IP.
+            device, created = Device.objects.get_or_create(name="Orange Pi")
+            
+            # Update IP and timestamp
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[0]
+            else:
+                ip = request.META.get('REMOTE_ADDR')
+                
+            device.ip_address = ip
+            device.save() # auto_now will update last_seen
+            
+            return JsonResponse({"status": "ok", "timestamp": timezone.now()}, status=200)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    
+    return JsonResponse({"status": "ignored"}, status=405)
 
 @login_required
 def settings_view(request):
